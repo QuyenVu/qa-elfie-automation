@@ -1,4 +1,4 @@
-name: Run Tests with Android Emulator
+name: Run Tests
 
 on:
   push:
@@ -17,62 +17,57 @@ jobs:
         node-version: [20.15.0]
 
     steps:
-      # Step 1: Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
 
-      # Step 3: Install Node.js dependencies
       - name: Install dependencies
         run: npm install
 
-      # Step 4: Install and Set Up Android SDK
-      - name: Install Android SDK
+      # Step 1: Set up Android SDK
+      - name: Set up Android SDK
         run: |
-          sudo apt-get update
-          sudo apt-get install -y openjdk-11-jdk unzip
-          curl -o commandlinetools.zip https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
-          mkdir -p $HOME/android-sdk/cmdline-tools
-          unzip -q commandlinetools.zip -d $HOME/android-sdk/cmdline-tools
-          mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
-          echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
-          echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
-          echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
-          echo "$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
+          sudo apt update
+          sudo apt install -y openjdk-11-jdk
+          mkdir -p $HOME/android-sdk
+          export ANDROID_HOME=$HOME/android-sdk
+          export ANDROID_SDK_ROOT=$HOME/android-sdk
+          export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH
+          echo "export ANDROID_HOME=$HOME/android-sdk" >> ~/.bashrc
+          echo "export ANDROID_SDK_ROOT=$HOME/android-sdk" >> ~/.bashrc
+          echo "export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH" >> ~/.bashrc
 
-      # Step 5: Install Android tools and system images
+      # Step 2: Install Android tools and system images
       - name: Install Android tools
         run: |
           sdkmanager --update
           sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0" "emulator" "system-images;android-35;google_apis;x86_64"
           echo "y" | sdkmanager --licenses
 
-      # Step 6: Set up and start Android emulator
-      - name: Set up emulator
+      # Step 3: Create Emulator (AVD)
+      - name: Create Android Emulator AVD
         run: |
-          echo "no" | avdmanager create avd -n "Pixel_API_35" -d "pixel" -k "system-images;android-35;google_apis;x86_64"
-          nohup emulator -avd Pixel_API_35 -no-snapshot -no-audio -no-window -gpu off &
+          echo "no" | avdmanager create avd -n "Pixel_API_35" -d "pixel" -k "system-images;android-35;google_apis;x86_64" --force
 
-      # Step 7: Wait for emulator to boot
-      - name: Wait for emulator to boot
+      # Step 4: Start Emulator
+      - name: Start Android Emulator
         run: |
+          nohup emulator -avd Pixel_API_35 -no-window -no-audio -gpu off &
           adb wait-for-device
-          adb shell input keyevent 82
 
-      # Step 8: Run Node.js tests
+      # Step 5: Run tests
       - name: Run tests
         run: npm run test:emulator3
 
-      # Step 9: Generate Allure report
+      # Step 6: Generate Allure report
       - name: Generate Allure report
         run: npm run allure:generate
 
-      # Step 10: Upload Allure report
+      # Step 7: Upload Allure report
       - name: Upload Allure report
         uses: actions/upload-artifact@v3
         with:

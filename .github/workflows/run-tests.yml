@@ -44,43 +44,39 @@ jobs:
           echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
           echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
           echo "$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
+          echo "$HOME/android-sdk/emulator" >> $GITHUB_PATH
 
       # Step 5: Install Android tools and system images
       - name: Install Android tools and system images
         run: |
           sdkmanager --update
-          yes |sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0" "emulator" "system-images;android-35;google_apis;x86_64"
+          sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0" "emulator" "system-images;android-35;google_apis;x86_64"
           yes | sdkmanager --licenses
 
-      # Step 6: Debug installed components
-      - name: List installed SDK components
-        run: sdkmanager --list
-
-      # Step 7: Set up emulator
+      # Step 6: Set up and start Android emulator
       - name: Set up emulator
         run: |
           echo "no" | avdmanager create avd -n "Pixel_API_35" -d "pixel" -k "system-images;android-35;google_apis;x86_64" --force
           nohup emulator -avd Pixel_API_35 -no-snapshot -no-audio -no-window -gpu off &
 
-      # Step 8: Wait for emulator to boot
+      # Step 7: Wait for emulator to boot
       - name: Wait for emulator to boot
         run: |
           adb wait-for-device
           echo "Checking device status..."
           adb devices
-          # Wait a little longer before proceeding (optional)
-          adb wait-for-device
+          # Unlock the emulator screen
           adb shell input keyevent 82
 
-      # Step 9: Run Node.js tests
+      # Step 8: Run Node.js tests
       - name: Run tests
-        run: npm run test:emulator3
+        run: npm run test:emulator
 
-      # Step 10: Generate Allure report
+      # Step 9: Generate Allure report
       - name: Generate Allure report
         run: npm run allure:generate
 
-      # Step 11: Upload Allure report
+      # Step 10: Upload Allure report
       - name: Upload Allure report
         uses: actions/upload-artifact@v3
         with:

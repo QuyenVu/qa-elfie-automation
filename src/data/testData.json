@@ -1,0 +1,12 @@
+{
+  "url": "https://www.google.com",
+  "searchKeyword": "Elfie",
+  "expectedCopyRightText": "Copyright © 2024 Elfie Pte. Ltd.",
+  "screenshotNames": {
+    "elfieLogo": "elfie-logo",
+    "copyright": "Copyright",
+    "hamburgerMenu": "HamburgerMenu",
+    "xIcon": "XIcon",
+    "currenIcon": "CurrencyIcon"
+  }
+}

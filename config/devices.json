@@ -1,0 +1,29 @@
+{
+  "emulator1": {
+    "platformName": "Android",
+    "deviceName": "emulator-5554",
+    "platformVersion": "15.0",
+    "appPackage": "com.android.chrome",
+    "appActivity": "com.google.android.apps.chrome.Main",
+    "appPath": "./apps/com.android.chrome.apk",
+    "automationName": "UiAutomator2"
+  },
+  "emulator2": {
+    "platformName": "Android",
+    "deviceName": "emulator-5556",
+    "platformVersion": "12.0",
+    "appPackage": "com.android.chrome",
+    "appActivity": "com.google.android.apps.chrome.Main",
+    "appPath": "./apps/com.android.chrome.apk",
+    "automationName": "UiAutomator2"
+  },
+  "emulator3": {
+    "platformName": "Android",
+    "deviceName": "Pixel API 35",
+    "platformVersion": "15.0",
+    "appPackage": "com.android.chrome",
+    "appActivity": "com.google.android.apps.chrome.Main",
+    "appPath": "./apps/com.android.chrome.apk",
+    "automationName": "UiAutomator2"
+  }
+}

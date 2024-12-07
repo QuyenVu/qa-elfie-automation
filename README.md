@@ -1,1 +1,0 @@
-# qa-elfie-automation

@@ -1,0 +1,40 @@
+{
+  "name": "automation",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "wdio run ./config/wdio.conf.ts",
+    "test:emulator1": "cross-env DEVICES=emulator1 ENV=prod npm run test",
+    "test:emulator2": "cross-env DEVICES=emulator2 ENV=prod npm run test",
+    "test:emulator3": "cross-env DEVICES=emulator3 ENV=prod npm run test",
+    "allure:generate": "allure generate allure-results --clean",
+    "allure:open": "allure open allure-report"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/pixelmatch": "^5.2.6",
+    "@types/pngjs": "^6.0.5",
+    "@wdio/allure-reporter": "^9.2.14",
+    "@wdio/appium-service": "^9.4.1",
+    "@wdio/cli": "^9.4.1",
+    "@wdio/local-runner": "^9.4.1",
+    "@wdio/mocha-framework": "^9.2.8",
+    "allure-commandline": "^2.32.0",
+    "chai": "^5.1.2",
+    "cross-env": "^7.0.3",
+    "fs-extra": "^11.0.4",
+    "moment": "^2.29.1",
+    "pixelmatch": "^5.3.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "appium": "^1.22.3",
+    "pngjs": "^7.0.0",
+    "webdriverio": "^9.4.1"
+  }
+}

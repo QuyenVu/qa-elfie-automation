@@ -12,6 +12,7 @@ npm install
 npm run test:emulator3
 ```
 
+- Open Allure report
 ```shell
 npm run allure:generate
 npm run allure:open

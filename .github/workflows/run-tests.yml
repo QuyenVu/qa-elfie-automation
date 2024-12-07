@@ -49,8 +49,8 @@ jobs:
       - name: Install Android tools and system images
         run: |
           sdkmanager --update
-          sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0" "emulator" "system-images;android-35;google_apis;x86_64"
-          echo "y" | sdkmanager --licenses
+          yes |sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0" "emulator" "system-images;android-35;google_apis;x86_64"
+          yes | sdkmanager --licenses
 
       # Step 6: Debug installed components
       - name: List installed SDK components

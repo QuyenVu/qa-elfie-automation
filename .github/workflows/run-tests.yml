@@ -1,4 +1,4 @@
-name: Run Tests
+name: Run Tests with Android Emulator
 
 on:
   push:
@@ -17,23 +17,58 @@ jobs:
         node-version: [20.15.0]
 
     steps:
+      # Step 1: Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # Step 2: Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
 
+      # Step 3: Install Node.js dependencies
       - name: Install dependencies
         run: npm install
 
+      # Step 4: Install Android SDK
+      - name: Install Android SDK
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y android-sdk
+          echo "export ANDROID_HOME=/usr/lib/android-sdk" >> $GITHUB_ENV
+          echo "export ANDROID_SDK_ROOT=/usr/lib/android-sdk" >> $GITHUB_ENV
+          echo "export PATH=$PATH:/usr/lib/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_ENV
+          echo "export PATH=$PATH:/usr/lib/android-sdk/platform-tools" >> $GITHUB_ENV
+
+      # Step 5: Install command line tools and build tools
+      - name: Install Android command-line tools
+        run: |
+          sdkmanager --update
+          sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0" "emulator" "system-images;android-35;google_apis;x86_64"
+          echo "y" | sdkmanager --licenses
+
+      # Step 6: Set up and start Android emulator
+      - name: Start emulator
+        run: |
+          echo "no" | avdmanager create avd -n "Pixel_API_35" -d "pixel" -k "system-images;android-35;google_apis;x86_64"
+          nohup emulator -avd Pixel_API_35 -no-snapshot -no-audio -no-window -gpu off &
+
+      # Step 7: Wait for emulator to boot
+      - name: Wait for emulator to boot
+        run: |
+          adb wait-for-device
+          adb shell input keyevent 82
+
+      # Step 8: Run Node.js tests
       - name: Run tests
         run: npm run test:emulator3
 
+      # Step 9: Generate Allure report
       - name: Generate Allure report
         run: npm run allure:generate
 
+      # Step 10: Upload Allure report
       - name: Upload Allure report
         uses: actions/upload-artifact@v3
         with:

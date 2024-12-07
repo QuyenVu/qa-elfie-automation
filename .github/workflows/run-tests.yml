@@ -46,10 +46,12 @@ jobs:
           echo "$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
 
       # Step 5: Install Android tools and system images
-      - name: Install Android tools
+      - name: Install Android tools and check available system images
         run: |
           sdkmanager --update
-          sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0" "emulator" "system-images;android-35;google_apis;x86_64"
+          sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0" "emulator"
+          sdkmanager --list  # This will list all available system images
+          sdkmanager "system-images;android-35;google_apis;x86_64"  # Use the correct system image
           echo "y" | sdkmanager --licenses
 
       # Step 6: Set up and start Android emulator

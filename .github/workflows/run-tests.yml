@@ -50,13 +50,13 @@ jobs:
       - name: Install Android tools and system images
         run: |
           sdkmanager --update
-          yes | sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0" "emulator" "system-images;android-35;google_apis;x86_64"
+          yes | sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0" "emulator" "system-images;android-35;google_apis;arm64-v8a"
           yes | sdkmanager --licenses
 
       # Step 6: Set up and start Android emulator
       - name: Set up emulator
         run: |
-          echo "no" | avdmanager create avd -n "Pixel_API_35" -d "pixel" -k "system-images;android-35;google_apis;x86_64" --force
+          echo "yes" | avdmanager create avd -n "Pixel_API_35" -d "pixel" -k "system-images;android-35;google_apis;arm64-v8a" --force
           nohup emulator -avd Pixel_API_35 -no-snapshot -no-audio -no-window -gpu off &
 
       # Step 7: Wait for emulator to boot

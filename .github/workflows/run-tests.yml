@@ -66,6 +66,10 @@ jobs:
       - name: Wait for emulator to boot
         run: |
           adb wait-for-device
+          echo "Checking device status..."
+          adb devices
+          # Wait a little longer before proceeding (optional)
+          adb wait-for-device
           adb shell input keyevent 82
 
       # Step 9: Run Node.js tests

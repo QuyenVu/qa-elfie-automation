@@ -52,27 +52,31 @@ jobs:
           sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0" "emulator" "system-images;android-35;google_apis;x86_64"
           echo "y" | sdkmanager --licenses
 
-      # Step 6: Set up and start Android emulator
+      # Step 6: Debug installed components
+      - name: List installed SDK components
+        run: sdkmanager --list
+
+      # Step 7: Set up emulator
       - name: Set up emulator
         run: |
           echo "no" | avdmanager create avd -n "Pixel_API_35" -d "pixel" -k "system-images;android-35;google_apis;x86_64" --force
           nohup emulator -avd Pixel_API_35 -no-snapshot -no-audio -no-window -gpu off &
 
-      # Step 7: Wait for emulator to boot
+      # Step 8: Wait for emulator to boot
       - name: Wait for emulator to boot
         run: |
           adb wait-for-device
           adb shell input keyevent 82
 
-      # Step 8: Run Node.js tests
+      # Step 9: Run Node.js tests
       - name: Run tests
         run: npm run test:emulator3
 
-      # Step 9: Generate Allure report
+      # Step 10: Generate Allure report
       - name: Generate Allure report
         run: npm run allure:generate
 
-      # Step 10: Upload Allure report
+      # Step 11: Upload Allure report
       - name: Upload Allure report
         uses: actions/upload-artifact@v3
         with:

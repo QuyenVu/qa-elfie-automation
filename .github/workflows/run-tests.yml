@@ -31,18 +31,22 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # Step 4: Install Android SDK
-      - name: Install Android SDK
+      # Step 4: Download and Set Up Android SDK
+      - name: Set up Android SDK
         run: |
           sudo apt-get update
-          sudo apt-get install -y android-sdk
-          echo "export ANDROID_HOME=/usr/lib/android-sdk" >> $GITHUB_ENV
-          echo "export ANDROID_SDK_ROOT=/usr/lib/android-sdk" >> $GITHUB_ENV
-          echo "export PATH=$PATH:/usr/lib/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_ENV
-          echo "export PATH=$PATH:/usr/lib/android-sdk/platform-tools" >> $GITHUB_ENV
+          sudo apt-get install -y unzip
+          curl -o android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
+          mkdir -p $HOME/android-sdk/cmdline-tools
+          unzip -q android-sdk.zip -d $HOME/android-sdk/cmdline-tools
+          mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
+          echo "export ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "export ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin:$HOME/android-sdk/platform-tools" >> $GITHUB_ENV
+          source $GITHUB_ENV
 
-      # Step 5: Install command line tools and build tools
-      - name: Install Android command-line tools
+      # Step 5: Install Command Line Tools and System Images
+      - name: Install Android tools and system images
         run: |
           sdkmanager --update
           sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0" "emulator" "system-images;android-35;google_apis;x86_64"

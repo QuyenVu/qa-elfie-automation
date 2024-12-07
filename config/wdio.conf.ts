@@ -49,7 +49,7 @@ export const config = {
         logInfo('Cleaning old data...');
         const imagesFolderPath = join(process.cwd(), 'images');
         try {
-            const images = readdirSync(imagesFolderPath); // Get all files in the folder
+            const images = readdirSync(imagesFolderPath);
             for (const image of images) {
                 const imagePath = join(imagesFolderPath, image);
                 rmSync(imagePath, { force: true });

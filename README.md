@@ -31,7 +31,7 @@ npm run allure:open
 
 - Need to be improved:
 ````
-- Scroll method is not working properly on the emulator.
+- Scroll method is not working properly on the emulator as what i am expecting.
 - Need to setup to run on multi environment and multi device.
 - Need to improve the framework to be more flexible and easy to use.
 ````
